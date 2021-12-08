@@ -1,7 +1,7 @@
 PaymentNetwork Woocommerce Plugin
 ==============
 
-This module enables the use of http://www.cardstream.com payment gateway using the Woocommerce project http://www.woothemes.com
+This module enables payment gateway using the Woocommerce project http://www.woothemes.com
 
 COMPATIBILITY
 ------------

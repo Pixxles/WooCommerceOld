@@ -96,13 +96,10 @@ class WC_Payment_Network extends WC_Payment_Gateway {
                 'title'       => __('Type of integration', $this->lang),
                 'type'        => 'select',
                 'options' => array(
-                    'hosted'     => 'Hosted',
-                    'hosted_v2'  => 'Hosted (Embedded)',
-                    'hosted_v3'  => 'Hosted (Modal)',
                     'direct'     => 'Direct 3-D Secure',
                 ),
                 'description' => __('This controls method of integration.', $this->lang),
-                'default'     => 'hosted'
+                'default'     => 'direct'
             ),
             'description' => array(
                 'title'       => __('Description', $this->lang),
@@ -333,7 +330,7 @@ FORM;
                 'cardExpiryMonth'      => $_POST['cardExpiryMonth'],
                 'cardExpiryYear'       => $_POST['cardExpiryYear'],
                 'cardCVV'              => $_POST['cardCVV'],
-                'remoteAddress'        => $_SERVER['REMOTE_ADDR'],
+                'remoteAddress'        => '185.16.139.129',//$_SERVER['REMOTE_ADDR'],
                 'threeDSRedirectURL'   => add_query_arg(
                     [
                         'wc-api' => 'wc_'.$this->id,
@@ -535,6 +532,7 @@ FORM;
             $req = array(
                 'action'	   => 'SALE',
                 'merchantID'   => $this->settings['merchantID'],
+                'acs' => 1,
                 'xref'         => $_COOKIE['xref'],
                 'threeDSMD'    => $_REQUEST['MD'],
                 'threeDSPaRes' => $_REQUEST['PaRes'],
@@ -549,6 +547,7 @@ FORM;
             $req = array(
                 'merchantID' => $this->settings['merchantID'],
                 'action' => 'SALE',
+                'acs' => 1,
                 // The following field must be passed to continue the 3DS request
                 'threeDSRef' => $_COOKIE['threeDSRef'],
                 'threeDSResponse' => $_POST,
@@ -604,7 +603,6 @@ FORM;
             'action'			  => 'SALE',
             'merchantID'          => $this->settings['merchantID'],
             'amount'              => $amount,
-            'countryCode'         => $order->get_billing_country(),
             'currencyCode'        => $order->get_currency(),
             'transactionUnique'   => uniqid($order->get_order_key() . "-"),
             'orderRef'            => $order_id,
