@@ -580,25 +580,7 @@ FORM;
     protected function capture_order($order_id) {
         $order     = new WC_Order($order_id);
         $amount    = \P3\SDK\AmountHelper::calculateAmountByCurrency($order->get_total(), $order->get_currency());
-
-        $billing_address  = $order->get_billing_address_1();
-        $billing2 = $order->get_billing_address_2();
-
-        if (!empty($billing2)) {
-            $billing_address .= "\n" . $billing2;
-        }
-        $billing_address .= "\n" . $order->get_billing_city();
-        $state = $order->get_billing_state();
-        if (!empty($state)) {
-            $billing_address .= "\n" . $state;
-            unset($state);
-        }
-        $country = $order->get_billing_country();
-        if (!empty($country)) {
-            $billing_address .= "\n" . $country;
-            unset($country);
-        }
-
+        
         // Fields for hash
         $req = array(
             'action'			  => 'SALE',
@@ -609,7 +591,7 @@ FORM;
             'orderRef'            => $order_id,
             'customerName'        => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
             'customerCountryCode' => $order->get_billing_country(),
-            'customerAddress'     => $billing_address,
+            'customerAddress'     => $$order->get_billing_address_1(),
             'customerCounty'	  => $order->get_billing_state(),
             'customerTown'		  => $order->get_billing_city(),
             'customerPostCode'    => $order->get_billing_postcode(),
