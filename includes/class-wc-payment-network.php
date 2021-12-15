@@ -591,7 +591,7 @@ FORM;
             'orderRef'            => $order_id,
             'customerName'        => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
             'customerCountryCode' => $order->get_billing_country(),
-            'customerAddress'     => $$order->get_billing_address_1(),
+            'customerAddress'     => $order->get_billing_address_1(),
             'customerCounty'	  => $order->get_billing_state(),
             'customerTown'		  => $order->get_billing_city(),
             'customerPostCode'    => $order->get_billing_postcode(),
