@@ -189,7 +189,7 @@ HTML;
      * @param int $amount
      * @return array
      */
-    public function refundRequest(string $xref, int $amount): array
+    public function refundRequest(string $xref, int $amount, $reason): array
     {
         $queryPayload = [
             'merchantID' => $this->merchantID,
@@ -218,6 +218,7 @@ HTML;
                     'type' => 1,
                     'action' => 'REFUND_SALE',
                     'amount' => $amount,
+                    'reason' => $reason,
                 ]);
                 break;
             default:

@@ -359,7 +359,7 @@ FORM;
         try {
             $amountByCurrency = \P3\SDK\AmountHelper::calculateAmountByCurrency($amount, $order->get_currency());
 
-            $data = $this->gateway->refundRequest($order->get_transaction_id(), $amountByCurrency);
+            $data = $this->gateway->refundRequest($order->get_transaction_id(), $amountByCurrency, $reason);
 
             $order->add_order_note($data['message']);
 
@@ -581,6 +581,24 @@ FORM;
         $order     = new WC_Order($order_id);
         $amount    = \P3\SDK\AmountHelper::calculateAmountByCurrency($order->get_total(), $order->get_currency());
         
+        $billing_address  = $order->get_billing_address_1();
+        $billing2 = $order->get_billing_address_2();
+
+        if (!empty($billing2)) {
+            $billing_address .= " " . $billing2;
+        }
+        $billing_address .= " " . $order->get_billing_city();
+        $state = $order->get_billing_state();
+        if (!empty($state)) {
+            $billing_address .= " " . $state;
+            unset($state);
+        }
+        $country = $order->get_billing_country();
+        if (!empty($country)) {
+            $billing_address .= " " . $country;
+            unset($country);
+        }
+
         // Fields for hash
         $req = array(
             'action'			  => 'SALE',
@@ -591,7 +609,7 @@ FORM;
             'orderRef'            => $order_id,
             'customerName'        => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
             'customerCountryCode' => $order->get_billing_country(),
-            'customerAddress'     => $order->get_billing_address_1(),
+            'customerAddress'     => $billing_address,
             'customerCounty'	  => $order->get_billing_state(),
             'customerTown'		  => $order->get_billing_city(),
             'customerPostCode'    => $order->get_billing_postcode(),
