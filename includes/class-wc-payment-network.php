@@ -331,7 +331,7 @@ FORM;
                 'cardExpiryMonth'      => $_POST['cardExpiryMonth'],
                 'cardExpiryYear'       => $_POST['cardExpiryYear'],
                 'cardCVV'              => $_POST['cardCVV'],
-                'remoteAddress'        => '185.16.139.129',//$_SERVER['REMOTE_ADDR'],
+                'remoteAddress'        => $_SERVER['REMOTE_ADDR'],
                 'threeDSRedirectURL'   => add_query_arg(
                     [
                         'wc-api' => 'wc_'.$this->id,
