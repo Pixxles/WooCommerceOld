@@ -334,8 +334,7 @@ FORM;
                 'remoteAddress'        => $_SERVER['REMOTE_ADDR'],
                 'threeDSRedirectURL'   => add_query_arg(
                     [
-                        'wc-api' => 'wc_'.$this->id,
-                        'XDEBUG_SESSION_START' => 'asdf'
+                        'wc-api' => 'wc_'.$this->id
                     ],
                     home_url('/')
                 ),
@@ -661,7 +660,7 @@ FORM;
 SCRIPT;
 
         } else {
-            wp_redirect($url.'&XDEBUG_SESSION_START=asdf');
+            wp_redirect($url);
         }
         exit;
     }
