@@ -122,13 +122,10 @@ class WC_Payment_Network extends WC_Payment_Gateway
 				'title'       => __('Type of integration', $this->lang),
 				'type'        => 'select',
 				'options' => array(
-					'hosted'     => 'Hosted',
-					'hosted_v2'  => 'Hosted (Embedded)',
-					'hosted_v3'  => 'Hosted (Modal)',
 					'direct'     => 'Direct 3-D Secure',
 				),
 				'description' => __('This controls method of integration.', $this->lang),
-				'default'     => 'hosted'
+				'default'     => 'direct'
 			),
 			'description' => array(
 				'title'       => __('Description', $this->lang),
@@ -139,17 +136,8 @@ class WC_Payment_Network extends WC_Payment_Gateway
 			'merchantID' => array(
 				'title'       => __('Merchant ID', $this->lang),
 				'type'        => 'text',
-				'description' => __('Please enter your ' . $this->method_title . ' merchant ID', $this->lang),
+				'description' => __('Please enter your merchant ID', $this->lang),
 				'default'     => $this->default_merchant_id,
-				'custom_attributes' => [
-					'required'        => true,
-				],
-			),
-			'merchant_country_code' => array(
-				'title'       => __('Merchant country code', $this->lang),
-				'type'        => 'text',
-				'description' => __('Please enter your ' . $this->method_title . ' merchant country code', $this->lang),
-				'default'     => $this->default_merchant_country_code,
 				'custom_attributes' => [
 					'required'        => true,
 				],
@@ -435,7 +423,7 @@ class WC_Payment_Network extends WC_Payment_Gateway
 		try {
 			$amountByCurrency = \P3\SDK\AmountHelper::calculateAmountByCurrency($amount, $order->get_currency());
 
-			$data = $this->gateway->refundRequest($order->get_transaction_id(), $amountByCurrency);
+			$data = $this->gateway->refundRequest($order->get_transaction_id(), $amountByCurrency, $reason);
 
 			$order->add_order_note($data['message']);
 
@@ -758,17 +746,17 @@ class WC_Payment_Network extends WC_Payment_Gateway
 		$billing2 = $order->get_billing_address_2();
 
 		if (!empty($billing2)) {
-			$billing_address .= "\n" . $billing2;
+			$billing_address .= " " . $billing2;
 		}
-		$billing_address .= "\n" . $order->get_billing_city();
+		$billing_address .= " " . $order->get_billing_city();
 		$state = $order->get_billing_state();
 		if (!empty($state)) {
-			$billing_address .= "\n" . $state;
+			$billing_address .= " " . $state;
 			unset($state);
 		}
 		$country = $order->get_billing_country();
 		if (!empty($country)) {
-			$billing_address .= "\n" . $country;
+			$billing_address .= " " . $country;
 			unset($country);
 		}
 
@@ -777,7 +765,6 @@ class WC_Payment_Network extends WC_Payment_Gateway
 			'action'			  => 'SALE',
 			'merchantID'          => $this->settings['merchantID'],
 			'amount'              => $amount,
-			'countryCode'         => $this->settings['merchant_country_code'],
 			'currencyCode'        => $order->get_currency(),
 			'transactionUnique'   => uniqid($order->get_order_key() . '-'),
 			'orderRef'            => $order_id,

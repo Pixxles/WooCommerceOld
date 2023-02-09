@@ -25,12 +25,12 @@ class Gateway
 	/**
 	 * @var string	Merchant Account Id or Alias
 	 */
-	protected $merchantID = '100856';
+	protected $merchantID;
 
 	/**
 	 * @var string	Secret for above Merchant Account
 	 */
-	protected $merchantSecret = 'Circle4Take40Idea';
+	protected $merchantSecret;
 
 	/**
 	 * Useful response codes
@@ -84,7 +84,7 @@ class Gateway
 		}
 
 		$this->hostedModalUrl = $gatewayURL.'hosted/modal/';
-		$this->directUrl = $gatewayURL.'direct/';
+		$this->directUrl = $gatewayURL.'direct';
 
 		if (array_key_exists('client', $options)) {
 			$this->client = $options['client'];
@@ -189,7 +189,7 @@ HTML;
 	 * @param int $amount
 	 * @return array
 	 */
-	public function refundRequest(string $xref, int $amount): array
+	public function refundRequest(string $xref, int $amount, $reason): array
 	{
 		$queryPayload = [
 			'merchantID' => $this->merchantID,
@@ -218,8 +218,11 @@ HTML;
 					'type' => 1,
 					'action' => 'REFUND_SALE',
 					'amount' => $amount,
+					'reason' => $reason,
 				]);
 				break;
+			case 'rejected':
+				throw new \InvalidArgumentException('Unable to refund/void a rejected transaction');
 			default:
 				throw new \InvalidArgumentException('Something went wrong, we can\'t find transaction '. $xref);
 		}
